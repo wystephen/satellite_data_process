@@ -146,6 +146,9 @@ def evaluate_lenet5(learning_rate=0.1, n_epochs=200,
     #valid_set_x, valid_set_y = datasets[1]
     #test_set_x, test_set_y = datasets[2]
 
+    dm = DataManage()
+    train_set_x,train_set_y,valid_set_x,valid_set_y,test_set_x,test_set_y = dm.theano_type_data()
+
 
 
     # compute number of minibatches for training, validation and testing
@@ -172,7 +175,7 @@ def evaluate_lenet5(learning_rate=0.1, n_epochs=200,
     # Reshape matrix of rasterized images of shape (batch_size, 28 * 28)
     # to a 4D tensor, compatible with our LeNetConvPoolLayer
     # (28, 28) is the size of MNIST images.
-    layer0_input = x.reshape((batch_size, 1, 28, 28))
+    layer0_input = x.reshape((batch_size, 1, 46, 99))
 
     # Construct the first convolutional pooling layer:
     # filtering reduces the image size to (28-5+1 , 28-5+1) = (24, 24)
@@ -181,7 +184,7 @@ def evaluate_lenet5(learning_rate=0.1, n_epochs=200,
     layer0 = LeNetConvPoolLayer(
         rng,
         input=layer0_input,
-        image_shape=(batch_size, 1, 28, 28),
+        image_shape=(batch_size, 1, 46, 99),
         filter_shape=(nkerns[0], 1, 5, 5),
         poolsize=(2, 2)
     )
@@ -214,7 +217,7 @@ def evaluate_lenet5(learning_rate=0.1, n_epochs=200,
     )
 
     # classify the values of the fully-connected sigmoidal layer
-    layer3 = LogisticRegression(input=layer2.output, n_in=500, n_out=10)
+    layer3 = LogisticRegression(input=layer2.output, n_in=500, n_out=1)
 
     # the cost we minimize during training is the NLL of the model
     cost = layer3.negative_log_likelihood(y)
