@@ -24,7 +24,10 @@ class DataManage:
 
         return shared_x,T.cast(shared_y ,'int32')
 
-    def theano_type_data(self):
+    def theano_type_data(self,train_precent=0.5,valid_precent = 0.3):
+        if train_precent + valid_precent > 1.0:
+            print u"train dataset 和 valid dataset 占比必须小于一"
+        
 
 
 
