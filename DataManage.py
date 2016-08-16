@@ -4,6 +4,9 @@
 import scipy as sp
 import numpy as np
 
+import theano
+import theano.tensor as T
+
 class DataManage:
     def __init__(self):
         self.x = np.loadtxt("outX.txt")
@@ -14,6 +17,16 @@ class DataManage:
 
     def pca(self):
         print 'pca'
+
+    def shared_data(X,Y,self):
+        shared_x = theano.shared(np.asarray(X,dtype=theano.config.floatX),borrow=True)
+        shared_y = theano.shared(np.asarray(Y,dtype=theano.config.floatX),borrow=True)
+
+        return shared_x,T.cast(shared_y ,'int32')
+
+    def theano_type_data(self):
+
+
 
 
 
