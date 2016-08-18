@@ -7,6 +7,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 
+__float__ = 'float32'
 
 class DataManage:
     def __init__(self):
@@ -20,8 +21,9 @@ class DataManage:
         print 'pca'
 
     def shared_data(X, Y, self):
-        shared_x = theano.shared(np.asarray(X, dtype=theano.config.floatX), borrow=True)
-        shared_y = theano.shared(np.asarray(Y, dtype=theano.config.floatX), borrow=True)
+
+        shared_x = theano.shared(np.asarray(X,dtype=theano.config.floatX), borrow=True)
+        shared_y = theano.shared(np.asarray(Y), borrow=True)
 
         return shared_x, T.cast(shared_y, 'int32')
 
@@ -42,5 +44,5 @@ if __name__ == '__main__':
     dm = DataManage()
     x, y = dm.get_train_set()
 
-    print x.shape
-    print y.shape
+
+    train_x,train_y,test_x,test_y,valid_x,valid_y = dm.theano_type_data()

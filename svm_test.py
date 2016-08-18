@@ -14,7 +14,7 @@ if __name__ == '__main__':
     dm = DataManage()
     x,y = dm.get_train_set()
 
-    clf = svm.LinearSVC(C=2)
+    clf = svm.LinearSVC()
     clf.fit(x[1:3000,:],y[1:3000])
 
     pre_y = clf.predict(x[3000::])
