@@ -12,6 +12,9 @@ from pybrain.supervised.trainers import BackpropTrainer
 
 from pybrain.datasets import SupervisedDataSet
 
+from pybrain.utilities import percentError
+
+
 
 if __name__ == '__main__':
     dm = DataManage()
@@ -19,6 +22,10 @@ if __name__ == '__main__':
 
     net = buildNetwork(4554,22,1,bias = True)
     ds = SupervisedDataSet(4554,1)
+    t_ds = SupervisedDataSet(4554,1)
+    max_iterations= 1000
+    err_list = np.zeros([max_iterations])
+
 
     print "Begin set dataset"
 
@@ -26,22 +33,29 @@ if __name__ == '__main__':
     for i in range(0,train_size-1):
         ds.addSample(x[i,:],y[i])
 
+    for i in range(train_size,x.shape[0]):
+        t_ds.addSample(x[i,:],y[i])
+
+
     print "Dataset set succesful,begin to test train"
 
     trainer = BackpropTrainer(net, ds)
     trainer.train()
     print "Test train ok,begin to train until convergence"
-    trainer.trainUntilConvergence(maxEpochs=1000,continueEpochs=12)
+
+    for it in range(0,max_iterations):
+        trainer.trainEpochs()
+        print "epoch:",it
+        if it % 10 ==0:
+            print "accuracy rating of training dataset:"
+            print percentError( trainer.testOnClassData(),ds)
+        elif it % 20 == 0:
+            print "accuracy ration of test dataset:"
+            print percentError(trainer.testOnClassData(t_ds),t_ds)
+
+
+    #trainer.trainUntilConvergence(maxEpochs=1000,continueEpochs=12)
     print "Network is convergenced."
 
-    pre_y = np.zeros(x.shape(0)-train_size)
-    for k in range(0,(pre_y.shape(0)-1)):
-        pre_y[k] = net.active(x[train_size+k,:])
-    print "Predict over."
 
-    err = np.zeros_like(pre_y)
-    np.abs(pre_y-y[train_size::],err)
 
-    plt.figure(1)
-    plt.hist(err)
-    plt.show()
