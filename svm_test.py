@@ -15,12 +15,13 @@ if __name__ == '__main__':
     x,y = dm.get_train_set()
 
     clf = svm.LinearSVC()
-    clf.fit(x[1:3000,:],y[1:3000])
+    train_size = 5000
+    clf.fit(x[1:train_size,:],y[1:train_size])
 
-    pre_y = clf.predict(x[3000::])
+    pre_y = clf.predict(x[train_size::])
 
     err = np.zeros_like(pre_y)
-    np.abs(pre_y-y[3000::],err)
+    np.abs(pre_y-y[train_size::],err)
 
     plt.figure(1)
     plt.hist(err)

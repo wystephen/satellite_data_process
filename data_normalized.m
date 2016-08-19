@@ -1,5 +1,6 @@
 %normalized
-
+img = X;
+flag_set  = Y;
 X = zeros(size(img));
 Y = zeros(size(flag_set));
 

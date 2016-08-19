@@ -22,7 +22,7 @@ class DataManage:
 
     def shared_data(X, Y, self):
 
-        shared_x = theano.shared(np.asarray(X,dtype=theano.config.floatX), borrow=True)
+        shared_x = theano.shared(np.asarray(X), borrow=True)
         shared_y = theano.shared(np.asarray(Y), borrow=True)
 
         return shared_x, T.cast(shared_y, 'int32')
