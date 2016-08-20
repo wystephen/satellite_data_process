@@ -48,6 +48,7 @@ if __name__ == '__main__':
     train_accuracy = 0.0
     valid_accuracy = 0.0
     min_err = 100.0
+    min_err_train = 100.0
 
     for it in range(0, max_iterations):
         trainer.trainEpochs()
@@ -60,6 +61,10 @@ if __name__ == '__main__':
             #    percentError(trainer.testOnClassData(t_ds), t_ds['class'])
         if it % 5 == 0:
             err = percentError(trainer.testOnClassData(t_ds), t_ds['class'])
+            err_train = percentError(trainer.testOnClassData(),ds['class'])
+            if err_train < min_err_train:
+                min_err_train = err_train
+                print "min err of train dataset is:",min_err_train
             if err < min_err:
                 min_err = err
                 print "min err of valid datset is:", min_err
