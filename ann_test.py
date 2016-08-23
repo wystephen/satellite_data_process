@@ -50,6 +50,11 @@ if __name__ == '__main__':
     min_err = 100.0
     min_err_train = 100.0
 
+    big_times = 0
+
+    last_err=100.0
+    last_err_train = 100.0
+
     for it in range(0, max_iterations):
         trainer.trainEpochs()
         print "epoch:", it
@@ -68,8 +73,16 @@ if __name__ == '__main__':
             if err < min_err:
                 min_err = err
                 print "min err of valid datset is:", min_err
+            if err_train > last_err_train and err < last_err:
+                big_times = big_times +1
+                if big_times >2 :
+                    break
+            last_err_train = err_train
+            last_err = err
+
 
 
     # trainer.trainUntilConvergence(maxEpochs=1000,continueEpochs=12)
     print "Network is convergenced."
     print "min err of valid datset is:",min_err
+    print "min err of train dataset is :" , min_err_train
