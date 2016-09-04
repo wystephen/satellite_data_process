@@ -8,6 +8,9 @@ import theano
 import theano.tensor as T
 import theano.configdefaults
 
+import logistic_cg
+import logistic_sgd
+
 __float__ = 'float32'
 
 class DataManage:
