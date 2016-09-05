@@ -67,7 +67,7 @@ if __name__ == '__main__':
             #     sess.run(train_op,feed_dict = {X:x[start:end],Y:y[start:end]})
             print("train")
             #7202
-            train_N = 22
+            train_N = 20
             batch_size = 200
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
@@ -78,3 +78,11 @@ if __name__ == '__main__':
                               sess.run(predict_op, feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]})))
             print("train",i, np.mean(np.argmax(y[0:batch_size*train_N], axis=1) ==
                              sess.run(predict_op, feed_dict={X: x[0:batch_size*train_N, :], Y: y[0:batch_size*train_N]})))
+
+            #Best````
+            # test
+            # 856
+            # 0.921611492817
+            # train
+            # 856
+            # 0.99425
