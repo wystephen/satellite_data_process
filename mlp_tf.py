@@ -105,7 +105,7 @@ if __name__ == '__main__':
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
                                               Y: y[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.9, p_keep_hidden: 0.85})
+                                            ,p_keep_input: 0.9, p_keep_hidden: 0.9})
 
             summary , acc = sess.run([merged,acc_op],
                                      feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
