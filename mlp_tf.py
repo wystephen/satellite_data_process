@@ -45,9 +45,10 @@ if __name__ == '__main__':
     p_keep_input = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    w_h1 = init_weights([4554, 200])
-    w_h2 = init_weights([200, 30])
-    w_o = init_weights([30, 2])
+    w_h1 = init_weights([4554, 100])
+    w_h2 = init_weights([100, 10])
+    #w_h3 = init_weights([200,30])
+    w_o = init_weights([10, 2])
 
     X = tf.nn.dropout(X,p_keep_input)
 
@@ -56,6 +57,9 @@ if __name__ == '__main__':
 
     h2 = tf.nn.sigmoid(tf.matmul(h1, w_h2))
     h2 = tf.nn.dropout(h2,p_keep_hidden)
+
+    # h3 = tf.nn.sigmoid(tf.matmul(h2,w_h3))
+    # h3 = tf.nn.dropout(h3,p_keep_hidden)
 
     py_x = tf.matmul(h2, w_o)
 
