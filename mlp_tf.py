@@ -7,6 +7,11 @@ import tensorflow as tf
 import numpy as np
 #import DataManage as DM
 
+import sys
+
+import timeit
+import time
+
 
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
@@ -37,17 +42,20 @@ if __name__ == '__main__':
     X = tf.placeholder("float", [None, 4554])
     Y = tf.placeholder("float", [None, 2])
 
+    p_keep_input = tf.placeholder("float")
+    p_keep_hidden = tf.placeholder("float")
+
     w_h1 = init_weights([4554, 200])
     w_h2 = init_weights([200, 30])
     w_o = init_weights([30, 2])
 
-    #X = tf.nn.dropout(X,tf.placeholder("float"))
+    X = tf.nn.dropout(X,p_keep_input)
 
     h1 = tf.nn.sigmoid(tf.matmul(X, w_h1))
-    #h1 = tf.nn.dropout(h1,tf.placeholder("float"))
+    h1 = tf.nn.dropout(h1,p_keep_hidden)
 
     h2 = tf.nn.sigmoid(tf.matmul(h1, w_h2))
-    #h2 = tf.nn.dropout(h2,tf.placeholder("float"))
+    h2 = tf.nn.dropout(h2,p_keep_hidden)
 
     py_x = tf.matmul(h2, w_o)
 
@@ -56,8 +64,24 @@ if __name__ == '__main__':
     #train_op = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
     predict_op = tf.argmax(py_x, 1)
 
+    correct_pred = tf.equal(tf.argmax(Y, 1), tf.argmax(py_x, 1))  # Count correct predictions
+    acc_op = tf.reduce_mean(tf.cast(correct_pred, "float"))  # Cast boolean to float to average
+
+    #for visualize
+    tf.histogram_summary("w_h1",w_h1)
+    tf.histogram_summary("w_h2",w_h2)
+    tf.histogram_summary("w_o",w_o)
+    tf.scalar_summary("cost",cost)
+    tf.scalar_summary("accuracy",acc_op)
+
+
     print("Begin to train model.")
     with tf.Session() as sess:
+
+        file_dir = "./log/mlp_logs_" + time.strftime("%a-%d-%b-%Y--%H:%M:%S", time.localtime())
+        writer = tf.train.SummaryWriter(file_dir,sess.graph)
+        merged = tf.merge_all_summaries()
+
         tf.initialize_all_variables().run()
 
 
@@ -67,17 +91,26 @@ if __name__ == '__main__':
             #     sess.run(train_op,feed_dict = {X:x[start:end],Y:y[start:end]})
             print("train")
             #7202
-            train_N = 20
-            batch_size = 200
+            train_N = 10
+            batch_size = 400
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
-                                              Y: y[(j- 1) * batch_size+1:j * batch_size,:]})
+                                              Y: y[(j- 1) * batch_size+1:j * batch_size,:]
+                                            ,p_keep_input: 0.9, p_keep_hidden: 0.95})
+
+            summary , acc = sess.run([merged,acc_op],
+                                     feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
+                                         , p_keep_input: 1.0, p_keep_hidden: 1.0})
+
+            writer.add_summary(summary,i)
 
             print ("test",i, np.mean(np.argmax(y[batch_size*train_N::], axis=1) ==
-                              sess.run(predict_op, feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]})))
+                              sess.run(predict_op, feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
+                                  , p_keep_input: 1.0, p_keep_hidden: 1.0})))
             print("train",i, np.mean(np.argmax(y[0:batch_size*train_N], axis=1) ==
-                             sess.run(predict_op, feed_dict={X: x[0:batch_size*train_N, :], Y: y[0:batch_size*train_N]})))
+                             sess.run(predict_op, feed_dict={X: x[0:batch_size*train_N, :], Y: y[0:batch_size*train_N]
+                                 , p_keep_input: 1.0, p_keep_hidden: 1.0})))
 
             #Best````
             # test
