@@ -4,6 +4,8 @@
 import numpy as np
 import random as rd
 
+import matplotlib.pyplot as plt
+
 class DataLoad:
     def __init__(self):
         #self.oldX = np.loadtxt("outX.txt")
@@ -65,9 +67,14 @@ class DataLoad:
 
         for i in range(0,self.X.shape[0]-1):
             self.X[i,:] = (self.X[i,:]-mean)/std
+            if self.Y[i] <1.0:
+                self.Y[i] = 0
+            else:
+                self.Y[i] = 1
 
         #for test
         print(self.X.mean(axis=0),self.X.std(axis=0))
+
 
 
     def data_save(self):
@@ -84,6 +91,14 @@ class DataLoad:
             X[i,:] = X[i,:] / mean
 
 
+    def display(self):
+        plt.figure("1")
+        plt.plot(self.Y)
+
+        plt.figure("2")
+        plt.hist(self.X)
+
+        plt.show()
 
 if __name__ == '__main__':
     dl = DataLoad()
@@ -91,3 +106,4 @@ if __name__ == '__main__':
     dl.random_sample(4000)
     dl.nomalize_data()
     dl.data_save()
+    #dl.display()

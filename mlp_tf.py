@@ -22,7 +22,7 @@ if __name__ == '__main__':
     #y_t = np.loadtxt("outY.txt")
 
     x = np.loadtxt("sumX.txt")
-    y = np.loadtxt("sumY.txt")
+    y_t = np.loadtxt("sunY.txt")
 
     print("Without theano!!!!")
     #x, y_t = dm.get_train_set()
@@ -35,7 +35,8 @@ if __name__ == '__main__':
             y[i, 1] = 1
 
 
-    print(y.mean())
+    print(x.mean())
+    print(y_t.mean())
     # net = buildNetwork(4554, 22, 2, bias=True)
     # ds = ClassificationDataSet(4554, 1, nb_classes=2)
     # t_ds = ClassificationDataSet(4554, 1, nb_classes=2)
@@ -48,8 +49,8 @@ if __name__ == '__main__':
     p_keep_input = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    w_h1 = init_weights([4554, 211])
-    w_h2 = init_weights([211, 21])
+    w_h1 = init_weights([4554, 12])
+    w_h2 = init_weights([12, 21])
     #w_h3 = init_weights([200,30])
     w_o = init_weights([21, 2])
 
@@ -108,7 +109,7 @@ if __name__ == '__main__':
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
                                               Y: y[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.9, p_keep_hidden: 0.9})
+                                            ,p_keep_input: 0.8, p_keep_hidden: 0.8})
 
             summary , acc = sess.run([merged,acc_op],
                                      feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
