@@ -6,8 +6,8 @@ import random as rd
 
 class DataLoad:
     def __init__(self):
-        self.oldX = np.loadtxt("outX.txt")
-        self.oldY = np.loadtxt("outY.txt")
+        #self.oldX = np.loadtxt("outX.txt")
+        #self.oldY = np.loadtxt("outY.txt")
 
         self.Xpos = np.loadtxt("Data/Xpos.txt")
         self.Xneg = np.loadtxt("Data/Xneg.txt")
@@ -20,11 +20,23 @@ class DataLoad:
         rd.seed()
 
     def toOneDataset(self):
-        self.X = np.zeros([self.oldX.shape[0]+self.Xpos.shape[0]+self.Xneg.shape[0],self.oldX.shape[1]])
-        self.Y = np.zeros([self.oldX.shape[0]+self.Xpos.shape[0]+self.Xneg.shape[0],self.oldY.shape[1]])
+        self.X = np.zeros([self.Xpos.shape[0]+self.Xneg.shape[0],self.Xpos.shape[1]])
+        self.Y = np.zeros([self.Ypos.shape[0]+self.Yneg.shape[0]])
 
-        self.X = np.zeros([self.oldX.shape[1]])
-        self.Y = np.zeros([self.oldY.shape[1]])
+        #self.X = np.zeros([self.oldX.shape[1]])
+        #self.Y = np.zeros([self.oldY.shape[1]])
+        self.X[0:self.Xpos.shape[0],:] = self.Xpos
+        self.X[self.Xpos.shape[0]::,:] = self.Xneg
+
+        self.Y[0:self.Ypos.shape[0]] = self.Ypos
+        self.Y[self.Ypos.shape[0]::] = self.Yneg
+
+        print(self.X.shape,self.Y.shape)
+
+
+    def random_sample(self,N=1000):
+        
+
 
     def nomalized_X(self,X):
         mean = X.mean()
@@ -36,9 +48,7 @@ class DataLoad:
 
 
 
-
-
-
 if __name__ == '__main__':
     dl = DataLoad()
+    dl.toOneDataset()
 
