@@ -49,14 +49,14 @@ if __name__ == '__main__':
     p_keep_input = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    w_h1 = init_weights([4554, 12])
-    w_h2 = init_weights([12, 21])
+    w_h1 = init_weights([4554, 222])
+    w_h2 = init_weights([222, 21])
     #w_h3 = init_weights([200,30])
     w_o = init_weights([21, 2])
 
-    b_h1 = init_weights([211])
-    b_h2 = init_weights([21])
-    b_o = init_weights([2])
+    # b_h1 = init_weights([211])
+    # b_h2 = init_weights([21])
+    # b_o = init_weights([2])
 
     X = tf.nn.dropout(X,p_keep_input)
 
@@ -104,12 +104,12 @@ if __name__ == '__main__':
             print("train")
             #7202
             train_N = 10
-            batch_size = 400
+            batch_size = 450
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
                                               Y: y[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.8, p_keep_hidden: 0.8})
+                                            ,p_keep_input: 0.95, p_keep_hidden: 0.95})
 
             summary , acc = sess.run([merged,acc_op],
                                      feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]

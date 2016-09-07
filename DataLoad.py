@@ -65,8 +65,10 @@ class DataLoad:
         self.X.mean(axis=0,out=mean)
         self.X.std(axis=0,out=std)
 
-        for i in range(0,self.X.shape[0]-1):
-            self.X[i,:] = (self.X[i,:]-mean)/std
+        for i in range(self.X.shape[0]):
+            #self.X[i,:] = (self.X[i,:]-mean)/std
+            for j in range(self.X.shape[1]):
+                self.X[i,j] = (self.X[i,j] - mean[j])/std[j]
             if self.Y[i] <1.0:
                 self.Y[i] = 0
             else:
