@@ -18,8 +18,8 @@ def init_weights(shape):
 
 
 if __name__ == '__main__':
-    #x = np.loadtxt("outX.txt")
-    #y_t = np.loadtxt("outY.txt")
+    # x = np.loadtxt("outX.txt")
+    # y_t = np.loadtxt("outY.txt")
 
     x = np.loadtxt("sumX.txt")
     y_t = np.loadtxt("sunY.txt")
@@ -49,9 +49,9 @@ if __name__ == '__main__':
     p_keep_input = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    w_h1 = init_weights([4554, 222])
-    w_h2 = init_weights([222, 21])
-    #w_h3 = init_weights([200,30])
+    w_h1 = init_weights([4554, 221])
+    w_h2 = init_weights([221, 21])
+    # w_h3 = init_weights([200,30])
     w_o = init_weights([21, 2])
 
     # b_h1 = init_weights([211])
@@ -60,10 +60,10 @@ if __name__ == '__main__':
 
     X = tf.nn.dropout(X,p_keep_input)
 
-    h1 = tf.nn.sigmoid(tf.matmul(X, w_h1))
+    h1 = tf.nn.sigmoid(tf.matmul(X, w_h1),"h1")
     h1 = tf.nn.dropout(h1,p_keep_hidden)
 
-    h2 = tf.nn.sigmoid(tf.matmul(h1, w_h2))
+    h2 = tf.nn.sigmoid(tf.matmul(h1, w_h2),"h2")
     h2 = tf.nn.dropout(h2,p_keep_hidden)
 
     # h3 = tf.nn.sigmoid(tf.matmul(h2,w_h3))
@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y))
     train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
-    #train_op = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
+    #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
     predict_op = tf.argmax(py_x, 1)
 
     correct_pred = tf.equal(tf.argmax(Y, 1), tf.argmax(py_x, 1))  # Count correct predictions
@@ -104,12 +104,12 @@ if __name__ == '__main__':
             print("train")
             #7202
             train_N = 10
-            batch_size = 450
+            batch_size = 400
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
                                               Y: y[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.95, p_keep_hidden: 0.95})
+                                            ,p_keep_input: 0.9, p_keep_hidden: 0.9})
 
             summary , acc = sess.run([merged,acc_op],
                                      feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
