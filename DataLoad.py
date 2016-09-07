@@ -35,7 +35,31 @@ class DataLoad:
 
 
     def random_sample(self,N=1000):
-        
+        tmp_x = np.zeros([self.X.shape[1]])
+        tmp_y = np.zeros([1])
+        for j in range(N):
+            a = rd.randrange(0,self.X.shape[0])
+            b = rd.randrange(0,self.X.shape[0])
+
+            if j%100==0:
+                print(j,N)
+
+            if a==b:
+                continue
+            else:
+                tmp_x = self.X[b,:]
+                tmp_y = self.Y[b]
+                self.X[b,:] = self.X[a,:]
+                self.Y[b] = self.Y[a]
+
+                self.X[a,:] = tmp_x
+                self.Y[a] = tmp_y
+
+
+
+    def data_save(self):
+        np.savetxt("sumX.txt",self.X)
+        np.savetxt("sunY.txt",self.Y)
 
 
     def nomalized_X(self,X):
@@ -51,4 +75,6 @@ class DataLoad:
 if __name__ == '__main__':
     dl = DataLoad()
     dl.toOneDataset()
+    dl.random_sample(4000)
 
+    dl.data_save()
