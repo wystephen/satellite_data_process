@@ -18,8 +18,11 @@ def init_weights(shape):
 
 
 if __name__ == '__main__':
-    x = np.loadtxt("outX.txt")
-    y_t = np.loadtxt("outY.txt")
+    #x = np.loadtxt("outX.txt")
+    #y_t = np.loadtxt("outY.txt")
+
+    x = np.loadtxt("sumX.txt")
+    y = np.loadtxt("sumY.txt")
 
     print("Without theano!!!!")
     #x, y_t = dm.get_train_set()

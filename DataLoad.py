@@ -55,6 +55,19 @@ class DataLoad:
                 self.X[a,:] = tmp_x
                 self.Y[a] = tmp_y
 
+    #Normalize the
+    def nomalize_data(self):
+        mean = np.zeros([self.X.shape[1]])
+        std = np.zeros([self.X.shape[1]])
+
+        self.X.mean(axis=0,out=mean)
+        self.X.std(axis=0,out=std)
+
+        for i in range(0,self.X.shape[0]-1):
+            self.X[i,:] = (self.X[i,:]-mean)/std
+
+        #for test
+        print(self.X.mean(axis=0),self.X.std(axis=0))
 
 
     def data_save(self):
@@ -76,5 +89,5 @@ if __name__ == '__main__':
     dl = DataLoad()
     dl.toOneDataset()
     dl.random_sample(4000)
-
+    dl.nomalize_data()
     dl.data_save()
