@@ -119,8 +119,8 @@ if __name__ == '__main__':
             batch_size = 300
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
-                sess.run(train_op, feed_dict={X: x2[(j - 1) * batch_size+1:j * batch_size,:],
-                                              Y: y2[(j- 1) * batch_size+1:j * batch_size,:]
+                sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
+                                              Y: y[(j- 1) * batch_size+1:j * batch_size,:]
                                             ,p_keep_input: 0.9, p_keep_hidden: 0.9})
 
             summary , acc = sess.run([merged,acc_op],
