@@ -69,7 +69,7 @@ class DataLoad:
             #self.X[i,:] = (self.X[i,:]-mean)/std
             for j in range(self.X.shape[1]):
                 self.X[i,j] = (self.X[i,j] - mean[j])/std[j]
-            if self.Y[i] <1.0:
+            if self.Y[i] <0.0:
                 self.Y[i] = 0
             else:
                 self.Y[i] = 1
@@ -84,13 +84,7 @@ class DataLoad:
         np.savetxt("sunY.txt",self.Y)
 
 
-    def nomalized_X(self,X):
-        mean = X.mean()
-        std = X.std()
 
-        for i in range(X.shape[0]):
-            X[i,:] = X[i,:]-mean
-            X[i,:] = X[i,:] / mean
 
 
     def display(self):
