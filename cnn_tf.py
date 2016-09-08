@@ -45,9 +45,9 @@ if __name__ == '__main__':
     X = tf.placeholder("float", [None, 46, 99, 1])
     Y = tf.placeholder("float", [None, 2])
 
-    w = init_weights([5, 5, 1, 5])
+    w = init_weights([5, 5, 1, 10])
     # w2 = init_weights([5,5,10,20])
-    w3 = init_weights([5, 5, 5, 10])
+    w3 = init_weights([5, 5, 10, 10])
     w4 = init_weights([660, 15])
     w_o = init_weights([15, 2])
 
@@ -81,7 +81,8 @@ if __name__ == '__main__':
 
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y))
     # train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
-    train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    train_op = tf.train.AdadeltaOptimizer(0.001,0.9).minimize(cost)
     predict_op = tf.argmax(py_x, 1)
 
     correct_pred = tf.equal(tf.argmax(Y, 1), tf.argmax(py_x, 1))  # Count correct predictions
@@ -109,7 +110,7 @@ if __name__ == '__main__':
             #     sess.run(train_op,feed_dict = {X:x[start:end],Y:y[start:end]})
             print("train")
             # 7202
-            train_N = 20
+            train_N = 30
             batch_size = 200
             for j in range(1, train_N):
                 # print("data from : ", (i - 1) * 50, " to ", i * 50)

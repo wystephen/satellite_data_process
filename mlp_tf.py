@@ -79,12 +79,13 @@ if __name__ == '__main__':
 
     py_x = tf.matmul(h2, w_o)
 
-    #beta * tf.nn.l2_loss(hidden_weights)
     beta = 0.03
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y)
-                          +tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_o))
-    train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
+                          +beta*(tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_o)))
+    #train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
     #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    train_op = tf.train.AdadeltaOptimizer(0.001,0.9).minimize(cost)
+
     predict_op = tf.argmax(py_x, 1)
 
     correct_pred = tf.equal(tf.argmax(Y, 1), tf.argmax(py_x, 1))  # Count correct predictions
