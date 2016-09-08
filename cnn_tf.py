@@ -12,8 +12,9 @@ import time
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
 
+
 if __name__ == '__main__':
-    #Load data
+    # Load data
     x = np.loadtxt("outX.txt")
     y_t = np.loadtxt("outY.txt")
 
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     y_t2 = np.loadtxt("sunY.txt")
 
     print("Without theano!!!!")
-    #x, y_t = dm.get_train_set()
+    # x, y_t = dm.get_train_set()
 
     y = np.zeros([x.shape[0], 2], dtype=float)
     for i in range(0, y_t.shape[0] - 1):
@@ -37,38 +38,38 @@ if __name__ == '__main__':
         else:
             y2[i, 1] = 1
 
-    #Set model
-    x = x.reshape(-1,46,99,1)
-    x2=x.reshape(-1,46,99,1)
+    # Set model
+    x = x.reshape(-1, 46, 99, 1)
+    x2 = x.reshape(-1, 46, 99, 1)
 
-    X = tf.placeholder("float",[None,46,99,1])
-    Y = tf.placeholder("float",[None,2])
+    X = tf.placeholder("float", [None, 46, 99, 1])
+    Y = tf.placeholder("float", [None, 2])
 
-    w = init_weights([3,3,1,32])
-    w2 = init_weights([3,3,32,64])
-    w3 = init_weights([3,3,64,128])
-    w4 = init_weights([128 * 6 *13 ,300])
-    w_o = init_weights([300,2])
+    w = init_weights([5, 5, 1, 5])
+    # w2 = init_weights([5,5,10,20])
+    w3 = init_weights([5, 5, 5, 10])
+    w4 = init_weights([660, 15])
+    w_o = init_weights([15, 2])
 
     p_keep_conv = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    l1a = tf.nn.relu(tf.nn.conv2d(X, w,                       # l1a shape=(?, 46, 99, 32)
-                        strides=[1, 1, 1, 1], padding='SAME'))
-    l1 = tf.nn.max_pool(l1a, ksize=[1, 2, 2, 1],              # l1 shape=(?, 23, 50, 32)
-                        strides=[1, 2, 2, 1], padding='SAME')
+    l1a = tf.nn.relu(tf.nn.conv2d(X, w,  # l1a shape=(?, 46, 99, 32)
+                                  strides=[1, 1, 1, 1], padding='SAME'))
+    l1 = tf.nn.max_pool(l1a, ksize=[1, 3, 3, 1],  # l1 shape=(?, 16, 33, 32)
+                        strides=[1, 3, 3, 1], padding='SAME')
     l1 = tf.nn.dropout(l1, p_keep_conv)
 
-    l2a = tf.nn.relu(tf.nn.conv2d(l1, w2,                     # l2a shape=(?, 23, 50, 64)
-                        strides=[1, 1, 1, 1], padding='SAME'))
-    l2 = tf.nn.max_pool(l2a, ksize=[1, 2, 2, 1],              # l2 shape=(?, 12, 25, 64)
-                        strides=[1, 2, 2, 1], padding='SAME')
-    l2 = tf.nn.dropout(l2, p_keep_conv)
+    # l2a = tf.nn.relu(tf.nn.conv2d(l1, w2,                     # l2a shape=(?, 16, 33, 64)
+    #                     strides=[1, 1, 1, 1], padding='SAME'))
+    # l2 = tf.nn.max_pool(l2a, ksize=[1, 3, 3, 1],              # l2 shape=(?, 8, 17, 64)
+    #                     strides=[1, 3, 3, 1], padding='SAME')
+    # l2 = tf.nn.dropout(l2, p_keep_conv)
 
-    l3a = tf.nn.relu(tf.nn.conv2d(l2, w3,                     # l3a shape=(?, 12, 25, 128)
-                        strides=[1, 1, 1, 1], padding='SAME'))
-    l3 = tf.nn.max_pool(l3a, ksize=[1, 2, 2, 1],              # l3 shape=(?, 6, 13, 128)
-                        strides=[1, 2, 2, 1], padding='SAME')
+    l3a = tf.nn.relu(tf.nn.conv2d(l1, w3,  # l3a shape=(?, 8, 17, 128)
+                                  strides=[1, 1, 1, 1], padding='SAME'))
+    l3 = tf.nn.max_pool(l3a, ksize=[1, 3, 3, 1],  # l3 shape=(?, 4, 9, 128)
+                        strides=[1, 3, 3, 1], padding='SAME')
 
     l3 = tf.reshape(l3, [-1, w4.get_shape().as_list()[0]])
     l3 = tf.nn.dropout(l3, p_keep_conv)
@@ -76,11 +77,11 @@ if __name__ == '__main__':
     l4 = tf.nn.relu(tf.matmul(l3, w4))
     l4 = tf.nn.dropout(l4, p_keep_hidden)
 
-    py_x = tf.matmul(l4,w_o)
+    py_x = tf.matmul(l4, w_o)
 
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y))
-    train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
-    # train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    # train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
+    train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
     predict_op = tf.argmax(py_x, 1)
 
     correct_pred = tf.equal(tf.argmax(Y, 1), tf.argmax(py_x, 1))  # Count correct predictions
@@ -114,7 +115,7 @@ if __name__ == '__main__':
                 # print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x2[(j - 1) * batch_size + 1:j * batch_size, :],
                                               Y: y2[(j - 1) * batch_size + 1:j * batch_size, :]
-                    , p_keep_conv: 0.95, p_keep_hidden: 0.95})
+                    , p_keep_conv: 1.0, p_keep_hidden: 1.0})
 
             summary, acc = sess.run([merged, acc_op],
                                     feed_dict={X: x, Y: y
@@ -124,9 +125,9 @@ if __name__ == '__main__':
 
             print ("test", i, np.mean(np.argmax(y[batch_size * train_N::], axis=1) ==
                                       sess.run(predict_op,
-                                               feed_dict={X: x[batch_size * train_N::, :], Y: y[batch_size * train_N::]
+                                               feed_dict={X: x[batch_size * train_N::], Y: y[batch_size * train_N::]
                                                    , p_keep_conv: 1.0, p_keep_hidden: 1.0})))
             print("train", i, np.mean(np.argmax(y[0:batch_size * train_N], axis=1) ==
                                       sess.run(predict_op,
-                                               feed_dict={X: x[0:batch_size * train_N, :], Y: y[0:batch_size * train_N]
+                                               feed_dict={X: x[0:batch_size * train_N], Y: y[0:batch_size * train_N]
                                                    , p_keep_conv: 1.0, p_keep_hidden: 1.0})))
