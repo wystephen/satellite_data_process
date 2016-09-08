@@ -18,11 +18,11 @@ def init_weights(shape):
 
 
 if __name__ == '__main__':
-    # x = np.loadtxt("outX.txt")
-    # y_t = np.loadtxt("outY.txt")
+    x = np.loadtxt("outX.txt")
+    y_t = np.loadtxt("outY.txt")
 
-    x = np.loadtxt("sumX.txt")
-    y_t = np.loadtxt("sunY.txt")
+    x2 = np.loadtxt("sumX.txt")
+    y_t2 = np.loadtxt("sunY.txt")
 
     print("Without theano!!!!")
     #x, y_t = dm.get_train_set()
@@ -33,6 +33,14 @@ if __name__ == '__main__':
             y[i, 0] = 1
         else:
             y[i, 1] = 1
+
+    y2 = np.zeros([x2.shape[0], 2], dtype=float)
+    for i in range(0, y_t2.shape[0] - 1):
+        if y_t2[i] == 1:
+            y2[i, 0] = 1
+        else:
+            y2[i, 1] = 1
+
 
 
     print(x.mean())
@@ -98,21 +106,21 @@ if __name__ == '__main__':
 
 
         print("init varialbles.")
-        for i in range(2000):
+        for i in range(1000):
             # for start,end in zip(range(0,x.shape[0],100),range(100,x.shape[0],100)):
             #     sess.run(train_op,feed_dict = {X:x[start:end],Y:y[start:end]})
             print("train")
             #7202
-            train_N = 10
-            batch_size = 400
+            train_N = 20
+            batch_size = 200
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
-                sess.run(train_op, feed_dict={X: x[(j - 1) * batch_size+1:j * batch_size,:],
-                                              Y: y[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.9, p_keep_hidden: 0.9})
+                sess.run(train_op, feed_dict={X: x2[(j - 1) * batch_size+1:j * batch_size,:],
+                                              Y: y2[(j- 1) * batch_size+1:j * batch_size,:]
+                                            ,p_keep_input: 0.95, p_keep_hidden: 0.95})
 
             summary , acc = sess.run([merged,acc_op],
-                                     feed_dict={X: x[batch_size*train_N::,:], Y: y[batch_size*train_N::]
+                                     feed_dict={X: x, Y: y
                                          , p_keep_input: 1.0, p_keep_hidden: 1.0})
 
             writer.add_summary(summary,i)
