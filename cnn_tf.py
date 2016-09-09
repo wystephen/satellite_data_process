@@ -119,7 +119,7 @@ if __name__ == '__main__':
                     , p_keep_conv: 1.0, p_keep_hidden: 1.0})
 
             summary, acc = sess.run([merged, acc_op],
-                                    feed_dict={X: x, Y: y
+                                    feed_dict={X: x2[batch_size * train_N::], Y: y2[batch_size * train_N::]
                                         , p_keep_conv: 1.0, p_keep_hidden: 1.0})
 
             writer.add_summary(summary, i)
