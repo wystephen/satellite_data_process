@@ -111,10 +111,7 @@ if __name__ == '__main__':
 
         print("init varialbles.")
         for i in range(1000):
-            # for start,end in zip(range(0,x.shape[0],100),range(100,x.shape[0],100)):
-            #     sess.run(train_op,feed_dict = {X:x[start:end],Y:y[start:end]})
-            print("train")
-            #7202
+
             train_N = 40
             batch_size = 150
             for j in range(1, train_N):

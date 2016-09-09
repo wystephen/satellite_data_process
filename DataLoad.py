@@ -73,11 +73,23 @@ class DataLoad:
             # self.X[i,:] = (self.X[i,:]-mean)/std
             for j in range(self.X.shape[1]):
                 # self.X[i, j] = (self.X[i, j] - mean[j])/std[j]
-                self.X[i, j] = (self.X[i, j] - mean[j]) / (max[j]-min[j])
+                self.X[i, j] = (self.X[i, j] - min[j]) / (max[j]-min[j])
             if self.Y[i] < 0.0:
                 self.Y[i] = 0
             else:
                 self.Y[i] = 1
+
+        mean = np.zeros([self.X.shape[1]])
+        std = np.zeros([self.X.shape[1]])
+
+        self.X.mean(axis=0,out= mean)
+        self.X.std(axis = 0,out = std)
+        for i in range(self.X.shape[0]):
+            # self.X[i,:] = (self.X[i,:]-mean)/std
+            for j in range(self.X.shape[1]):
+                self.X[i, j] = (self.X[i, j] - mean[j])/std[j]
+
+
 
         # for test
         print(self.X.mean(axis=0), self.X.std(axis=0))
