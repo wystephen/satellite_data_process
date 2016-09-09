@@ -14,37 +14,37 @@ import time
 
 
 def init_weights(shape):
-    return tf.Variable(tf.random_normal(shape, stddev=0.01))
+    return tf.Variable(tf.random_normal(shape, stddev=0.04))
 
 
 if __name__ == '__main__':
-    x = np.loadtxt("outX.txt")
-    y_t = np.loadtxt("outY.txt")
+    # x = np.loadtxt("outX.txt")
+    # y_t = np.loadtxt("outY.txt")
 
-    x2 = np.loadtxt("sumX.txt")
-    y_t2 = np.loadtxt("sunY.txt")
+    x2 = np.loadtxt("norXrnd.txt")
+    y_t2 = np.loadtxt("norYrnd.txt")
 
     print("Without theano!!!!")
     #x, y_t = dm.get_train_set()
 
-    y = np.zeros([x.shape[0], 2], dtype=float)
-    for i in range(0, y_t.shape[0] - 1):
-        if y_t[i] == 1:
-            y[i, 0] = 1
-        else:
-            y[i, 1] = 1
+    # y = np.zeros([x.shape[0], 2], dtype=float)
+    # for i in range(0, y_t.shape[0] - 1):
+    #     if y_t[i] >0.5:
+    #         y[i, 0] = 1
+    #     else:
+    #         y[i, 1] = 1
 
     y2 = np.zeros([x2.shape[0], 2], dtype=float)
     for i in range(0, y_t2.shape[0] - 1):
-        if y_t2[i] == 1:
+        if y_t2[i] >0.5:
             y2[i, 0] = 1
         else:
             y2[i, 1] = 1
 
 
 
-    print(x.mean())
-    print(y_t.mean())
+    # print(x.mean())
+    # print(y_t.mean())
     # net = buildNetwork(4554, 22, 2, bias=True)
     # ds = ClassificationDataSet(4554, 1, nb_classes=2)
     # t_ds = ClassificationDataSet(4554, 1, nb_classes=2)
@@ -57,10 +57,10 @@ if __name__ == '__main__':
     p_keep_input = tf.placeholder("float")
     p_keep_hidden = tf.placeholder("float")
 
-    w_h1 = init_weights([4554, 500])
-    w_h2 = init_weights([500, 100])
+    w_h1 = init_weights([4554, 200])
+    w_h2 = init_weights([200, 10])
     # w_h3 = init_weights([200,30])
-    w_o = init_weights([100, 2])
+    w_o = init_weights([10, 2])
 
     # b_h1 = init_weights([211])
     # b_h2 = init_weights([21])
@@ -79,12 +79,13 @@ if __name__ == '__main__':
 
     py_x = tf.matmul(h2, w_o)
 
-    beta = 0.0
+    beta = 0.02
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y)
                           +beta*(tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_o)))
-    #train_op = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
-    train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
-    #train_op = tf.train.AdadeltaOptimizer(0.001,0.9).minimize(cost)
+    #train_op = tf.train.GradientDescentOptimizer(0.055).minimize(cost)
+    #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    train_op = tf.train.AdadeltaOptimizer(0.011,0.95).minimize(cost)
+    #train_op = tf.train.AdagradOptimizer(learning_rate=0.01).minimize(cost)
 
     predict_op = tf.argmax(py_x, 1)
 
@@ -112,13 +113,13 @@ if __name__ == '__main__':
         print("init varialbles.")
         for i in range(1000):
 
-            train_N = 40
-            batch_size = 150
+            train_N = 30
+            batch_size = 200
             for j in range(1, train_N):
                 #print("data from : ", (i - 1) * 50, " to ", i * 50)
                 sess.run(train_op, feed_dict={X: x2[(j - 1) * batch_size+1:j * batch_size,:],
                                               Y: y2[(j- 1) * batch_size+1:j * batch_size,:]
-                                            ,p_keep_input: 0.9, p_keep_hidden: 0.9})
+                                            ,p_keep_input: 0.95, p_keep_hidden: 0.95})
 
             summary , acc = sess.run([merged,acc_op],
                                      feed_dict={X: x2[batch_size*train_N::,:], Y: y2[batch_size*train_N::]
@@ -142,3 +143,6 @@ if __name__ == '__main__':
             # train
             # 856
             # 0.99425
+            #NOTE:
+            # l2 0.02 drop out0.95 0.95 mlp_logs_Fri-09-Sep-2016--19:58:32 test 283 0.952381
+            # drop out
