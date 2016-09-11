@@ -84,7 +84,7 @@ if __name__ == '__main__':
                           +beta*(tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_o)))
     #train_op = tf.train.GradientDescentOptimizer(0.055).minimize(cost)
     #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
-    train_op = tf.train.AdadeltaOptimizer(0.011,0.95).minimize(cost)
+    train_op = tf.train.AdadeltaOptimizer(0.001,0.95).minimize(cost)
     #train_op = tf.train.AdagradOptimizer(learning_rate=0.01).minimize(cost)
 
     predict_op = tf.argmax(py_x, 1)
