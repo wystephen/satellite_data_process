@@ -81,10 +81,10 @@ if __name__ == '__main__':
 
     beta = 0.02
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(py_x, Y)
-                          +beta*(tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_o)))
+                          +beta*(tf.nn.l2_loss(w_h1)+tf.nn.l2_loss(w_h2)+tf.nn.l2_loss(w_o)))
     #train_op = tf.train.GradientDescentOptimizer(0.055).minimize(cost)
-    #train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
-    train_op = tf.train.AdadeltaOptimizer(0.001,0.95).minimize(cost)
+    train_op = tf.train.RMSPropOptimizer(0.011, 0.9).minimize(cost)
+    #train_op = tf.train.AdadeltaOptimizer(0.001,0.95).minimize(cost)
     #train_op = tf.train.AdagradOptimizer(learning_rate=0.01).minimize(cost)
 
     predict_op = tf.argmax(py_x, 1)
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     print("Begin to train model.")
     with tf.Session() as sess:
 
-        file_dir = "./new_log/mlp_logs_" + time.strftime("%a-%d-%b-%Y--%H:%M:%S", time.localtime())
+        file_dir = "./new_log_here/mlp_logs_" + time.strftime("%a-%d-%b-%Y--%H:%M:%S", time.localtime())
         writer = tf.train.SummaryWriter(file_dir,sess.graph)
         merged = tf.merge_all_summaries()
 
