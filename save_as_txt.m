@@ -1,2 +1,2 @@
-save outX.txt -ASCII X
-save outY.txt -ASCII Y
+save norX.txt -ASCII Xl
+save norY.txt -ASCII Yl

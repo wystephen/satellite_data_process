@@ -14,7 +14,7 @@ if __name__ == '__main__':
     dm = DataManage()
     x,y = dm.get_train_set()
 
-    clf = svm.LinearSVC()
+    clf = svm.NuSVC()
     train_size = 5000
     clf.fit(x[1:train_size,:],y[1:train_size])
 
